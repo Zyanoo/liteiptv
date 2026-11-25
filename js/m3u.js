@@ -42,7 +42,7 @@ function convertToProxy(url, proxyBase) {
   var match = /^(udp|rtp):\/\/(.+)$/i.exec(url.trim());
   if (!match) return url;
   var scheme = match[1].toLowerCase();
-  var hostPort = match[2].replace(/\/$/, '');
+  var hostPort = match[2].replace(/\/$/, '').replace(/^@/, '');
   var base = proxyBase.replace(/\/$/, '');
   return base + '/' + scheme + '/' + hostPort;
 }

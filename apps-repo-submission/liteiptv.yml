@@ -9,4 +9,3 @@ description: |
 
   - Plays channels from an M3U / M3U8 playlist URL (HLS and MPEG-TS)
   - UDP multicast streams supported
-  - Optional: edit settings from your phone (needs Homebrew Channel root)

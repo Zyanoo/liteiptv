@@ -163,7 +163,11 @@
     videoEl.removeAttribute('src');
     videoEl.load();
 
-    var looksLikeTS = /\.ts(\?|$)/i.test(playUrl) || isMulticastUrl(ch.url);
+    // Multicast with no udpxy proxy: hand the udp:// / rtp:// URL straight to the
+    // TV's native player (what SS IPTV does). mpegts.js cannot open udp://.
+    var nativeMulticast = isMulticastUrl(playUrl);
+
+    var looksLikeTS = !nativeMulticast && (/\.ts(\?|$)/i.test(playUrl) || isMulticastUrl(ch.url));
     var looksLikeHLS = /\.m3u8(\?|$)/i.test(playUrl);
 
     if (looksLikeTS && window.mpegts && mpegts.isSupported()) {
@@ -184,7 +188,7 @@
       videoEl.play().catch(function () { /* autoplay may need a user gesture on first run */ });
     }
 
-    showBanner(ch.name, looksLikeHLS ? 'HLS stream' : (looksLikeTS ? 'MPEG-TS stream' : 'Direct stream'));
+    showBanner(ch.name, nativeMulticast ? 'Native UDP' : (looksLikeHLS ? 'HLS stream' : (looksLikeTS ? 'MPEG-TS stream' : 'Direct stream')));
     renderChannelList();
   }
 
@@ -261,7 +265,6 @@
     document.getElementById('font-scale').value = String(settings.fontScale || 1);
     statusEl.textContent = '';
     modalEl.classList.remove('hidden');
-    setupPhoneEditing();
   }
 
   function closeSettings() {
@@ -275,7 +278,6 @@
     settings.fontScale = parseFloat(document.getElementById('font-scale').value) || 1;
     saveSettings(settings);
     applyFontScale();
-    syncSettingsToLocalServer();
     statusEl.textContent = 'Loading playlist...';
 
     loadPlaylist(settings.m3uUrl, function (err, parsed) {
@@ -290,118 +292,6 @@
       startPlayback();
     });
   }
-
-  // ---------- Phone editing (QR + local HTTP server) ----------
-  // Launches a bundled Node HTTP server on the TV via Homebrew Channel's
-  // "exec" service, so a phone on the same network can edit settings
-  // through a plain web form. No pairing/cloud service involved.
-
-  var LOCAL_SERVER_PORT = 9881;
-  var SERVER_SCRIPT_PATH =
-    '/media/developer/apps/usr/palm/applications/com.homebrew.liteiptv/server/settings-server.js';
-
-  function execOnTV(command, cb) {
-    if (!window.webOS || !webOS.service) {
-      cb && cb(new Error('webOS service bridge unavailable (not running on a webOS TV?)'));
-      return;
-    }
-    webOS.service.request('luna://org.webosbrew.hbchannel.service', {
-      method: 'exec',
-      parameters: { command: command },
-      onSuccess: function (res) { cb && cb(null, res); },
-      onFailure: function (err) { cb && cb(err); }
-    });
-  }
-
-  function renderQr(text) {
-    var qrEl = document.getElementById('qr-code');
-    qrEl.innerHTML = '';
-    try {
-      var qr = qrcode(0, 'M');
-      qr.addData(text);
-      qr.make();
-      qrEl.innerHTML = qr.createImgTag(4, 4);
-    } catch (e) {
-      qrEl.textContent = 'QR error';
-    }
-  }
-
-  function fetchIpAndRenderQr() {
-    fetch('http://127.0.0.1:' + LOCAL_SERVER_PORT + '/api/ip')
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        var ip = data.ips && data.ips[0];
-        if (!ip) {
-          document.getElementById('qr-hint').textContent = 'Could not detect the TV\u2019s IP address.';
-          return;
-        }
-        var target = 'http://' + ip + ':' + data.port + '/';
-        document.getElementById('qr-hint').textContent = 'Scan with your phone (same Wi-Fi):';
-        document.getElementById('qr-url').textContent = target;
-        renderQr(target);
-      })
-      .catch(function () {
-        document.getElementById('qr-hint').textContent =
-          'Local server not reachable yet \u2014 open Settings again in a moment.';
-      });
-  }
-
-  function setupPhoneEditing() {
-    document.getElementById('qr-hint').textContent = 'Starting local server\u2026';
-    document.getElementById('qr-url').textContent = '';
-    document.getElementById('qr-code').innerHTML = '';
-
-    var startCmd =
-      'pgrep -f settings-server.js >/dev/null 2>&1 || ' +
-      '(nohup node ' + SERVER_SCRIPT_PATH + ' > /tmp/liteiptv-server.log 2>&1 &)';
-
-    execOnTV(startCmd, function (err) {
-      if (err) {
-        document.getElementById('qr-hint').textContent =
-          'Could not start local server (requires Homebrew Channel). ' + err.message;
-        return;
-      }
-      setTimeout(fetchIpAndRenderQr, 1500);
-    });
-  }
-
-  function syncSettingsToLocalServer() {
-    fetch('http://127.0.0.1:' + LOCAL_SERVER_PORT + '/api/settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(settings)
-    }).catch(function () { /* server may not be running; ignore */ });
-  }
-
-  function pollRemoteSettings() {
-    fetch('http://127.0.0.1:' + LOCAL_SERVER_PORT + '/api/settings')
-      .then(function (r) { return r.json(); })
-      .then(function (remote) {
-        var playlistChanged = remote.m3uUrl && remote.m3uUrl !== settings.m3uUrl;
-        var fontChanged = remote.fontScale && remote.fontScale != settings.fontScale;
-
-        settings.m3uUrl = remote.m3uUrl || settings.m3uUrl;
-        settings.udpxyBase = remote.udpxyBase != null ? remote.udpxyBase : settings.udpxyBase;
-        settings.startMode = remote.startMode || settings.startMode;
-        settings.fontScale = remote.fontScale || settings.fontScale;
-        saveSettings(settings);
-
-        if (fontChanged) applyFontScale();
-
-        if (playlistChanged) {
-          loadPlaylist(settings.m3uUrl, function (err, parsed) {
-            if (!err) {
-              channels = parsed;
-              renderChannelList();
-              startPlayback();
-            }
-          });
-        }
-      })
-      .catch(function () { /* server not up yet; ignore */ });
-  }
-
-  setInterval(pollRemoteSettings, 5000);
 
   // ---------- Startup ----------
 
