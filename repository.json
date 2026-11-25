@@ -1,0 +1,12 @@
+{
+  "packages": [
+    {
+      "id": "com.homebrew.liteiptv",
+      "title": "Lite IPTV",
+      "iconUri": "https://raw.githubusercontent.com/Zyanoo/liteiptv/main/icon.png",
+      "manifestUrl": "https://github.com/Zyanoo/liteiptv/releases/latest/download/com.homebrew.liteiptv.manifest.json",
+      "fullDescriptionUrl": "https://github.com/Zyanoo/liteiptv#readme",
+      "shortDescription": "Simple M3U / UDP IPTV player."
+    }
+  ]
+}

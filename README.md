@@ -7,6 +7,7 @@ Install through Homebrew Channel, or sideload `com.homebrew.liteiptv_1.0.0_all.i
 
 ## Repo layout
 - App source: `appinfo.json`, `index.html`, `js/`, `css/`, `server/`, icons
+- `repository.json`: custom Homebrew Channel repo (add its raw URL in Settings)
 - `release-assets/`: upload these two files to a GitHub Release (not needed in git)
 - `apps-repo-submission/liteiptv.yml`: file to submit to webosbrew/apps-repo
 
