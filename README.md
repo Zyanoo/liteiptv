@@ -12,3 +12,6 @@ Install through Homebrew Channel, or sideload `com.homebrew.liteiptv_1.0.0_all.i
 - `apps-repo-submission/liteiptv.yml`: file to submit to webosbrew/apps-repo
 
 Replace `Zyanoo` in `release-assets/*.json` and `apps-repo-submission/*.yml` with your GitHub username before releasing.
+
+add to homebrew repo:
+https://github.com/Zyanoo/liteiptv/releases/latest/download/com.homebrew.liteiptv.manifest.json
