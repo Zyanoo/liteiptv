@@ -1,0 +1,15 @@
+{
+  "id": "com.homebrew.liteiptv",
+  "version": "1.0.0",
+  "vendor": "homebrew",
+  "type": "web",
+  "main": "index.html",
+  "title": "Lite IPTV",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgImage": "",
+  "bgColor": "#000000",
+  "splashBackground": "splash.png",
+  "disableBackHistoryAPI": true,
+  "resolution": "1920x1080"
+}

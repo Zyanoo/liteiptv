@@ -1,0 +1,264 @@
+:root {
+  color-scheme: dark;
+  --ui-scale: 1;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  background: #000;
+  overflow: hidden;
+  font-family: "LG Smart UI", Arial, sans-serif;
+  color: #fff;
+}
+
+#video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1920px;
+  height: 1080px;
+  background: #000;
+  object-fit: contain;
+}
+
+/* invisible strip on the left edge that reveals the panel on mouse hover */
+#hoverzone {
+  position: absolute;
+  top: 0; left: 0;
+  width: 40px;
+  height: 1080px;
+  z-index: 5;
+}
+
+#panel {
+  position: absolute;
+  top: 0; left: 0;
+  width: 560px;
+  height: 1080px;
+  background: rgba(15, 15, 20, 0.92);
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+#panel.open {
+  transform: translateX(0);
+}
+
+#panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px 16px 32px;
+  font-size: calc(28px * var(--ui-scale));
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+}
+
+#settings-btn {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: calc(22px * var(--ui-scale));
+  cursor: pointer;
+}
+
+#channel-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+#channel-list li {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 32px;
+  font-size: calc(28px * var(--ui-scale));
+  border-left: 6px solid transparent;
+  cursor: pointer;
+}
+
+.channel-logo {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+}
+
+.channel-logo-missing {
+  display: inline-block;
+}
+
+.channel-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#channel-list li.active {
+  background: rgba(255,255,255,0.12);
+  border-left-color: #2e9fff;
+  font-weight: bold;
+}
+
+#channel-list li.focused {
+  background: rgba(46,159,255,0.35);
+}
+
+#banner {
+  position: absolute;
+  left: 60px;
+  bottom: 60px;
+  z-index: 8;
+  background: rgba(0,0,0,0.6);
+  padding: 18px 28px;
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+#banner.show { opacity: 1; }
+
+#banner-name {
+  font-size: calc(34px * var(--ui-scale));
+  font-weight: bold;
+}
+
+#banner-hint {
+  font-size: calc(22px * var(--ui-scale));
+  opacity: 0.75;
+  margin-top: 4px;
+}
+
+#settings-modal {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1920px;
+  height: 1080px;
+  background: rgba(0,0,0,0.75);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#settings-modal.hidden { display: none; }
+
+#settings-box {
+  width: 900px;
+  background: #15161b;
+  border-radius: 16px;
+  padding: 40px 50px;
+}
+
+#settings-box h2 {
+  margin-top: 0;
+  font-size: calc(36px * var(--ui-scale));
+}
+
+#settings-box label {
+  display: block;
+  font-size: calc(24px * var(--ui-scale));
+  margin: 20px 0 8px 0;
+  opacity: 0.85;
+}
+
+#settings-box input,
+#settings-box select {
+  width: 100%;
+  font-size: calc(26px * var(--ui-scale));
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.2);
+  background: #0c0d10;
+  color: #fff;
+}
+
+#settings-buttons {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+}
+
+#settings-buttons button {
+  flex: 1;
+  font-size: calc(26px * var(--ui-scale));
+  padding: 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+#save-btn {
+  background: #2e9fff;
+  color: #000;
+  font-weight: bold;
+}
+
+#close-btn {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+#settings-status {
+  margin-top: 18px;
+  font-size: calc(22px * var(--ui-scale));
+  min-height: 30px;
+  opacity: 0.85;
+}
+
+#qr-section {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 2px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+#qr-text {
+  flex: 1;
+}
+
+.qr-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.qr-hint {
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+.qr-url {
+  font-size: 18px;
+  color: #2e9fff;
+  margin-top: 6px;
+  word-break: break-all;
+}
+
+#qr-code {
+  flex: 0 0 auto;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  line-height: 0;
+}
+
+#qr-code img, #qr-code table {
+  width: 150px;
+  height: 150px;
+}

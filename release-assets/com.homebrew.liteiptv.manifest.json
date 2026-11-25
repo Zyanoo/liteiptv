@@ -1,0 +1,15 @@
+{
+  "id": "com.homebrew.liteiptv",
+  "version": "1.0.0",
+  "type": "web",
+  "title": "Lite IPTV",
+  "appDescription": "A simple M3U/UDP IPTV player for webOS.",
+  "iconUri": "https://raw.githubusercontent.com/YOUR_USER/liteiptv/main/icon.png",
+  "sourceUrl": "https://github.com/YOUR_USER/liteiptv",
+  "rootRequired": "optional",
+  "ipkUrl": "https://github.com/YOUR_USER/liteiptv/releases/latest/download/com.homebrew.liteiptv_1.0.0_all.ipk",
+  "ipkSize": 84968,
+  "ipkHash": {
+    "sha256": "36ca2c97ad92862b2d862023deb2994cfd81cc6d8c826bf39b098ff06d481519"
+  }
+}

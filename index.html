@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lite IPTV</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <video id="video" autoplay></video>
+
+  <div id="hoverzone"></div>
+
+  <!-- Channel list panel -->
+  <div id="panel">
+    <div id="panel-header">
+      <span id="channel-count"></span>
+      <button id="settings-btn">⚙ Settings</button>
+    </div>
+    <ul id="channel-list"></ul>
+  </div>
+
+  <!-- Now playing banner -->
+  <div id="banner">
+    <div id="banner-name">No channel loaded</div>
+    <div id="banner-hint">Add an M3U playlist in Settings</div>
+  </div>
+
+  <!-- Settings modal -->
+  <div id="settings-modal" class="hidden">
+    <div id="settings-box">
+      <h2>Settings</h2>
+
+      <label>M3U Playlist URL</label>
+      <input id="m3u-url" type="text" placeholder="http://example.com/playlist.m3u">
+
+      <label>UDPXY Proxy Base (for udp:// / rtp:// channels)</label>
+      <input id="udpxy-base" type="text" placeholder="http://192.168.1.50:4022">
+
+      <label>On App Start</label>
+      <select id="start-mode">
+        <option value="last">Resume last played channel</option>
+        <option value="first">Always play first channel</option>
+      </select>
+
+      <label>Font Size</label>
+      <select id="font-scale">
+        <option value="0.8">Small</option>
+        <option value="1">Medium</option>
+        <option value="1.25">Large</option>
+        <option value="1.5">Extra Large</option>
+      </select>
+
+      <div id="settings-buttons">
+        <button id="save-btn">Save &amp; Reload Playlist</button>
+        <button id="close-btn">Close</button>
+      </div>
+      <div id="settings-status"></div>
+
+      <div id="qr-section">
+        <div id="qr-text">
+          <div class="qr-title">Edit from your phone</div>
+          <div class="qr-hint" id="qr-hint">Starting local server&hellip;</div>
+          <div class="qr-url" id="qr-url"></div>
+        </div>
+        <div id="qr-code"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/mpegts.min.js"></script>
+  <script src="js/qrcode.min.js"></script>
+  <script src="js/m3u.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
